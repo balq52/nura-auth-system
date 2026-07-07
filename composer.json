@@ -1,5 +1,6 @@
 {
     "require": {
+        "ext-mongodb": "*",
         "mongodb/mongodb": "1.19",
         "predis/predis": "^3.5"
     }

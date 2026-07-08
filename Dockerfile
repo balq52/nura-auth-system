@@ -1,4 +1,5 @@
 FROM php:8.2-apache
+RUN ls -la /etc/apache2/mods-enabled/ | grep mpm
 
 RUN apt-get update && apt-get install -y \
     libssl-dev \
@@ -15,7 +16,11 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN a2enmod rewrite
+RUN a2dismod mpm_event 2>&1 || true
+   RUN a2dismod mpm_worker 2>&1 || true
+   RUN a2enmod mpm_prefork 2>&1
+   RUN a2enmod rewrite
+   RUN ls -la /etc/apache2/mods-enabled/ | grep mpm
 
 WORKDIR /var/www/html
 

@@ -16,11 +16,11 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN a2dismod mpm_event 2>&1 || true
-   RUN a2dismod mpm_worker 2>&1 || true
-   RUN a2enmod mpm_prefork 2>&1
-   RUN a2enmod rewrite
-   RUN ls -la /etc/apache2/mods-enabled/ | grep mpm
+RUN grep -rn "LoadModule mpm_" /etc/apache2/ || true
+RUN grep -rl "LoadModule mpm_event_module\|LoadModule mpm_worker_module" /etc/apache2/ | xargs -r sed -i '/LoadModule mpm_event_module\|LoadModule mpm_worker_module/d' || true
+RUN a2enmod mpm_prefork 2>&1 || true
+RUN a2enmod rewrite
+RUN grep -rn "LoadModule mpm_" /etc/apache2/ || true
 
 WORKDIR /var/www/html
 

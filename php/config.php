@@ -46,11 +46,12 @@ if (file_exists($autoload)) {
 function getMySQLConnection()
 {
     $host = getenv('MYSQL_HOST') ?: 'localhost';
+    $port = getenv('MYSQL_PORT') ?: '3306';
     $db   = getenv('MYSQL_DB') ?: 'auth_system';
     $user = getenv('MYSQL_USER') ?: 'root';
     $pass = getenv('MYSQL_PASS') ?: '';
 
-    $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+    $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -70,21 +71,24 @@ function getMongoCollection()
 }
 
 // ---------- 5. Redis connection (via Predis, pure PHP - no extension needed) ----------
-function getRedisClient()
-{
-    $host = getenv('REDIS_HOST') ?: '127.0.0.1';
-    $port = getenv('REDIS_PORT') ?: 6379;
-    return new Predis\Client([
-        'scheme' => 'tcp',
-        'host'   => $host,
-        'port'   => $port,
-    ]);
-}
 
 // ---------- 6. Session helpers (Redis-backed) ----------
 const SESSION_COOKIE_NAME = 'session_token';
 const SESSION_TTL_SECONDS = 3600; // 1 hour
-
+function getRedisClient()
+   {
+       $url = getenv('REDIS_URL');
+       if ($url) {
+           return new Predis\Client($url);
+       }
+       $host = getenv('REDIS_HOST') ?: '127.0.0.1';
+       $port = getenv('REDIS_PORT') ?: 6379;
+       return new Predis\Client([
+           'scheme' => 'tcp',
+           'host'   => $host,
+           'port'   => $port,
+       ]);
+   }
 /**
  * Create a new session for a logged-in user.
  * Stores token -> user_id in Redis, and sends the token to the browser as a cookie.

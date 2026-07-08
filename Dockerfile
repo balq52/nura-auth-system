@@ -22,6 +22,8 @@ RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
           /etc/apache2/mods-enabled/mpm_worker.conf \
     && a2enmod mpm_prefork \
     && a2enmod rewrite
+    RUN echo "=== MPM SEARCH ===" && grep -rn "LoadModule mpm" /etc/apache2/ || echo "none found"
+RUN apache2 -V | grep -i mpm || true
 
 WORKDIR /var/www/html
 

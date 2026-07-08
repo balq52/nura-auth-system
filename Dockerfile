@@ -15,6 +15,7 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork
 RUN a2enmod rewrite
 
 WORKDIR /var/www/html

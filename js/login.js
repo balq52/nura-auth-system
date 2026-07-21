@@ -26,6 +26,7 @@ $(document).ready(function () {
       xhrFields: { withCredentials: true }, // ensure the session cookie is sent/received
       success: function (response) {
         if (response.success) {
+          localStorage.setItem('auth_token', response.token);
           showAlert(response.message, 'success');
           setTimeout(function () {
             window.location.href = 'profile.html';

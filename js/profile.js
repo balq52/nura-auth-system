@@ -80,7 +80,7 @@ $(document).ready(function () {
   });
 
   // ---- Logout ----
-  $('#logoutBtn').on('click', function () {
+ $('#logoutBtn').on('click', function () {
     $.ajax({
       url: 'php/logout.php',
       type: 'POST',
@@ -91,3 +91,4 @@ $(document).ready(function () {
       }
     });
   });
+});

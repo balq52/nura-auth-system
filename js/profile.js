@@ -9,6 +9,10 @@ $(document).ready(function () {
 
   // ---- Load profile on page load ----
   function loadProfile() {
+    if (!localStorage.getItem('auth_token')) {
+      window.location.href = 'login.html';
+      return;
+    }
     $.ajax({
       url: 'php/profile.php',
       type: 'GET',
@@ -18,6 +22,7 @@ $(document).ready(function () {
         $('#loadingBox').addClass('d-none');
 
         if (!response.success) {
+          localStorage.removeItem('auth_token');
           window.location.href = 'login.html';
           return;
         }
@@ -36,6 +41,7 @@ $(document).ready(function () {
       },
       error: function () {
         // No valid session -> back to login
+        localStorage.removeItem('auth_token');
         window.location.href = 'login.html';
       }
     });
@@ -80,9 +86,8 @@ $(document).ready(function () {
       type: 'POST',
       xhrFields: { withCredentials: true },
       complete: function () {
+        localStorage.removeItem('auth_token');
         window.location.href = 'login.html';
       }
     });
   });
-
-});

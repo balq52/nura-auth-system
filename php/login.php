@@ -34,17 +34,17 @@ $stmt = $pdo->prepare('SELECT id, username, email, password FROM users WHERE use
     if (!$user || !password_verify($password, $user['password'])) {
         jsonResponse(['success' => false, 'message' => 'Invalid credentials.'], 401);
     }
-
-    createSession($user['id']);
-
+$token = createSession($user['id']);
     jsonResponse([
         'success' => true,
         'message' => 'Login successful!',
+        'token'   => $token,
         'user'    => [
             'id'       => $user['id'],
             'username' => $user['username'],
         ],
     ]);
+    
 
 } catch (PDOException $e) {
     error_log('Login DB error: ' . $e->getMessage());

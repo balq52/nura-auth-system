@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install pdo pdo_mysql mysqli zip
 
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+RUN pecl install mongodb-1.19.3 && docker-php-ext-enable mongodb
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
